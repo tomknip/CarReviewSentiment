@@ -1,3 +1,9 @@
+# Check for right packages
+packages <- c("tidyverse", "tm", "wordcloud", "wordcloud2", "tidytext", "stringr"
+              , "dplyr", "rpart", "caTools", "randomForest", "reshape2")
+new.packages <- packages[!(packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
 library(tidyverse)
 library(tm)
 library(wordcloud2)
