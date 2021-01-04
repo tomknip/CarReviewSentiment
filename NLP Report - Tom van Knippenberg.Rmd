@@ -29,19 +29,19 @@ The dataset used in this assignment is the [OpinRank Dataset](http://kavita-gane
 contains review from both cars and hotels from the websites Tripadvisor and Edmunds. 
 In this project the focus is on the car reviews. The dataset contains over 42.000 
 reviews from three different years, from 2007 to 2009.The project will focus on 
-three different brands from three different continents, namely Europe, Asia, and
-America. 
+three different brands from three different continents, namely BMW (Europe),
+Mazda (Asia), and Cadillac (America). This leaves 1602 reviews to analyze. 
 
-The goal of the assignment is to investigate the most common words used for reviewing
-a certain car and the average sentiment of a review on a certain car. This project 
-focuses on the area of semantics. 
+The goal of the assignment is to investigate the use of NLP for car manufacturers 
+with the most common words used for reviewing a certain brand and the sentiment 
+of a review on a certain brand. This project focuses on the area of semantics. 
 
 The R-script can be found on Github via this link: [CarReviewSentiment](https://github.com/tomknip/CarReviewSentiment "Homepage").
 
 ## Problem Statement
 
 The goal is to give the car manufacturers insight in what people think of their 
-produced cars. It can also be used by Edmunds to provide recommendations or 
+produced cars. It could also be used by Edmunds to provide recommendations or 
 ratings based on the reviews. 
 
 An example of a review for a BMW is:
@@ -57,30 +57,32 @@ miserable tires. They are expensive, and ride like a truck."
 \end{center}
 
 It is very hard for car manufacturers to read through all the reviews to optimize their 
-cars. Therefore, an automated way is needed to provide extra insights.
+cars. Therefore, an automated way is needed to provide useful insights.
 
 ## Analysis
 In this section the pre-processing performed on the car review data is described, 
 as well as an analysis of results of two techniques, namely Word Clouds and 
 sentiment analysis. Word Clouds provide a descriptive visualization of words used
-in the reviews. Sentiment analysis uses machine learning to 
+in the reviews. Sentiment analysis classifies reviews as either positive or
+negative to have insights about how people feel about a product or service.
 
 ### Pre-processing
 The first step is to process the data. It is needed to first extract all the text
 from the reviews to convert it in a corpus. For both of the analyses the following 
 pre-processing is used. 
 
-The first step in the pre-processing is to eliminate the stopwords that appear in 
-the reviews. This is done using the built-in function of R. Some words have been 
+The first step in the pre-processing is to lower all the letters used. After that, 
+punctuation is removed and stopwords that appear in the reviews are removed. 
+This last part is done using the built-in function of R. Some words have been 
 added to this list, namely "car", "cars", "drive", "driving" and the brand name. 
-
-Another aspect of pre-processing is to remove the punctuation. Comma's, question marks
-and points will be removed. 
 
 The last step is to stem all the words. This will reduce the amount of different 
 words used in the reviews even more. This helps for the computing power in the 
 sentiment analysis. This part is not used in the word clouds to show what kind of 
 form people use in their reviews.
+
+For the sentiment analysis based on learning, all the sparse terms are also 
+removed to lower the computational resources needed for this method. 
 
 ### Word Clouds as Exploratory Visualization
 Word clouds are a descriptive method of the content of text. In this case it 
@@ -106,8 +108,8 @@ useful.
 
 
 ### Sentiment Analysis
-Sentiment analysis is used to convert text into classifications, such as positive,
-negative or neutral. In this section, two approaches regarding sentiment will be used. 
+Sentiment analysis is used to convert text into classifications, such as positive 
+or negative. In this section, two approaches regarding sentiment will be used. 
 
 The first approach is a dictionary-based approach. This method uses a dictionary with given 
 scores to words. The advantage is that no training is needed. R provides a library 
@@ -126,15 +128,15 @@ knitr::include_graphics(c("BMW_DicSentAnalysis.jpg", "Mazda_DicSentAnalysis.jpg"
 
 The second approach is a learning-based approach. In this approach a classifier is 
 trained on a different dataset and provides predictions for the car-dataset. To train
-the classifier a training set is needed. The closest possible training set to the 
-theme in this report is the IMDB movie reviews dataset [2]. This is used as benchmark dataset
+the classifier a training set is needed. One training set that is quite similar to car reviews
+is the IMDB movie reviews dataset [2]. This is used as benchmark dataset
 to be able to discuss the accuracy of the method. The classifier is trained on 
 the first 1600 reviews of this dataset and tested on the 400 reviews after that. 
 
-Different classifiers have been tested, namely Logistic Regression, CART tree and
-Random Forest. The best classifier was the Random Forest. This classifier 
-proved an accuracy of 81% on the validation set of 400 reviews. The slight 
-tendency of the method is to predict a review positively. 
+Different classifiers have been built and tests, namely Logistic Regression, 
+CART tree and Random Forest. The best classifier was the Random Forest. 
+This classifier  proved an accuracy of 81% on the validation set of 400 reviews. 
+The slight tendency of the method is to predict a review positively. 
 
 The classifier built was then used on the car-dataset to classify the different 
 reviews of each brand. The results of the learning-based approach are shown in 
@@ -151,9 +153,8 @@ many reviews are classified as positive for all the different brands. Car
 manufacturers could now take the negatively classified reviews and analyze them 
 further to improve their cars in the future. 
 
-To do a comparison if results are different on the individual level between the 
-two approaches, the dictionary-based 
-method has been tested on the same test set as the learning-based method. The 
+To do a comparison if results are also reliable for the dictionary-based 
+method, it has been tested on the same test set as the learning-based method. The 
 dictionary-based method achieved an accuracy of 99.75% on the test dataset of
 the movies. This simple method can thus be very accurate to determine the 
 sentiment. The results shown in the figures are likely close to the results when
@@ -174,8 +175,9 @@ As can be seen from the word clouds some words describe positive feelings, such 
 love, fun and great. This is not very informative to car manufacturers. The good
 thing is that also some car parts come up in both sides of the word cloud. As an 
 example, navigation, controls and seats for the Cadillac as well as the Cadillac 
-Escalade appear. Cadillac could use this information to look further into these 
-car parts to improve them. It could very well be related to the Escalade model. 
+Escalade appear on the negative side. Cadillac could use this information to 
+look further into these car parts to improve them. It could very well be related 
+to problems with the Escalade model. 
 
 ## Conclusion & Future Work
 In this project, word clouds and sentiment analysis as two techniques of Natural 
@@ -186,12 +188,12 @@ analysis.
 
 This project has shown how automated Natural Language Processing could quickly 
 give information to car manufacturers to either improve their cars or improve 
-services to customers that give a negative review. 
+services to customers. 
 
 Future work should work on a dataset with classified car-reviews to compare the 
 two methods of sentiment analysis. Another aspect to improve could be the classifier 
-that is used in the learning-based approach and check if the dictionary-based method
-also works well on car review data.
+that is used in the learning-based approach. Lastly, the dictionary-based method
+should be tested on hand-classified car review data.
 
 
 ## References
