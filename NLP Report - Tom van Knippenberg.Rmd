@@ -1,0 +1,201 @@
+---
+title: "Improving Car Manufacturing with Sentiment Analysis on Car Reviews"
+author: "Tom van Knippenberg"
+date: "22-12-2020"
+output:
+  pdf_document: default
+  html_document: default
+subtitle: Intelligent Systems - Universidad Politécnica de Madrid
+---
+```{r img, echo=FALSE}
+htmltools::img(src = knitr::image_uri(paste(getwd(), "/UPM_logo.png", sep="")), 
+               alt = 'logo', in_header=TRUE,
+               style = 'position:absolute; top:0; right:0; padding:10px;')
+
+```
+
+
+```{r setup, include=FALSE, echo=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction 
+In this report different Natural Language Processing techniques will be used to 
+analyze car reviews. Reviews are unstructured data and need specialized techniques 
+in order to be analyzed usefully.
+
+The dataset used in this assignment is the [OpinRank Dataset](http://kavita-ganesan.com/entity-ranking-data/#.X-iCvdhKiUn "Homepage") 
+[1]. This dataset 
+contains review from both cars and hotels from the websites Tripadvisor and Edmunds. 
+In this project the focus is on the car reviews. The dataset contains over 42.000 
+reviews from three different years, from 2007 to 2009.The project will focus on 
+three different brands from three different continents, namely Europe, Asia, and
+America. 
+
+The goal of the assignment is to investigate the most common words used for reviewing
+a certain car and the average sentiment of a review on a certain car. This project 
+focuses on the area of semantics. 
+
+The R-script can be found on Github via this link: [CarReviewSentiment](https://github.com/tomknip/CarReviewSentiment "Homepage").
+
+## Problem Statement
+
+The goal is to give the car manufacturers insight in what people think of their 
+produced cars. It can also be used by Edmunds to provide recommendations or 
+ratings based on the reviews. 
+
+An example of a review for a BMW is:
+
+\begin{center}
+
+"I leased this car in February 07 and have about 6 months left on a 36 month lease. 
+I have just put on my third set of run flat tires (at 30,000 miles). I wish I had 
+checked the reviews of this problem before I purchased the car. There are thousands 
+of people who swear they will never buy or lease another bmw because of these 
+miserable tires. They are expensive, and ride like a truck."
+
+\end{center}
+
+It is very hard for car manufacturers to read through all the reviews to optimize their 
+cars. Therefore, an automated way is needed to provide extra insights.
+
+## Analysis
+In this section the pre-processing performed on the car review data is described, 
+as well as an analysis of results of two techniques, namely Word Clouds and 
+sentiment analysis. Word Clouds provide a descriptive visualization of words used
+in the reviews. Sentiment analysis uses machine learning to 
+
+### Pre-processing
+The first step is to process the data. It is needed to first extract all the text
+from the reviews to convert it in a corpus. For both of the analyses the following 
+pre-processing is used. 
+
+The first step in the pre-processing is to eliminate the stopwords that appear in 
+the reviews. This is done using the built-in function of R. Some words have been 
+added to this list, namely "car", "cars", "drive", "driving" and the brand name. 
+
+Another aspect of pre-processing is to remove the punctuation. Comma's, question marks
+and points will be removed. 
+
+The last step is to stem all the words. This will reduce the amount of different 
+words used in the reviews even more. This helps for the computing power in the 
+sentiment analysis. This part is not used in the word clouds to show what kind of 
+form people use in their reviews.
+
+### Word Clouds as Exploratory Visualization
+Word clouds are a descriptive method of the content of text. In this case it 
+can be used to visually show the words that appear in the car reviews for each brand. 
+Words that appear can be positive or negative parts of a car as well as experiences.
+In Figure 1 the word clouds for BMW, Mazda and Cadillac are shown. 
+
+
+```{r, out.width = "33%", fig.show = "hold", fig.cap="Word cloud for different brands, from left to right: BMW, Mazda, Cadillac", echo=FALSE}
+knitr::include_graphics(c("BMW_wordcloud.jpg", "Mazda_wordcloud.jpg", 
+                          "Cadillac_wordcloud.jpg"))
+```
+
+The word clouds show in general very positive words used for each of the brands. 
+Great, fun and love for example. For the BMW cars topics discussed are the engine, 
+handling and performance. The same holds in general for Mazda. The Cadillac reviewers
+talk more about the luxury and quality of the interior it seems. 
+
+These word clouds give some information about the words used. The results seem positive 
+for car manufacturers but it could well be that some positive words are actually negative 
+as they could follow up "not" in a sentence. Therefore, sentiment analysis can be 
+useful. 
+
+
+### Sentiment Analysis
+Sentiment analysis is used to convert text into classifications, such as positive,
+negative or neutral. In this section, two approaches regarding sentiment will be used. 
+
+The first approach is a dictionary-based approach. This method uses a dictionary with given 
+scores to words. The advantage is that no training is needed. R provides a library 
+named tidytext to perform this kind of sentiment analysis. It can access different 
+dictionaries. In this case, the bing dictionary has been used. The pre-processing of the 
+corpora is done according to the process described in the section "Pre-processing".
+
+The dictionary-based method classifies a review as negative if there are more 
+negative words than positive words in the text. The results are shown in Figure 2. 
+This method shows that many reviews are positive. 
+
+```{r, out.width = "33%", fig.show = "hold", fig.cap="Sentiment Analysis using Dictionary, from left to right: BMW, Mazda, Cadillac", echo=FALSE}
+knitr::include_graphics(c("BMW_DicSentAnalysis.jpg", "Mazda_DicSentAnalysis.jpg", 
+                          "Cadillac_DicSentAnalysis.jpg"))
+```
+
+The second approach is a learning-based approach. In this approach a classifier is 
+trained on a different dataset and provides predictions for the car-dataset. To train
+the classifier a training set is needed. The closest possible training set to the 
+theme in this report is the IMDB movie reviews dataset [2]. This is used as benchmark dataset
+to be able to discuss the accuracy of the method. The classifier is trained on 
+the first 1600 reviews of this dataset and tested on the 400 reviews after that. 
+
+Different classifiers have been tested, namely Logistic Regression, CART tree and
+Random Forest. The best classifier was the Random Forest. This classifier 
+proved an accuracy of 81% on the validation set of 400 reviews. The slight 
+tendency of the method is to predict a review positively. 
+
+The classifier built was then used on the car-dataset to classify the different 
+reviews of each brand. The results of the learning-based approach are shown in 
+Figure 3.
+
+
+```{r, out.width = "33%", fig.show = "hold", fig.cap="Sentiment Analysis using Machine Learning, from left to right: BMW, Mazda, Cadillac", echo=FALSE}
+knitr::include_graphics(c("BMW_ML_sentiment.jpg", "Mazda_ML_sentiment.jpg", 
+                          "Cadillac_ML_sentiment.jpg"))
+```
+
+Very similar results are shown as in the dictionary-based approach. As is shown, 
+many reviews are classified as positive for all the different brands. Car 
+manufacturers could now take the negatively classified reviews and analyze them 
+further to improve their cars in the future. 
+
+To do a comparison if results are different on the individual level between the 
+two approaches, the dictionary-based 
+method has been tested on the same test set as the learning-based method. The 
+dictionary-based method achieved an accuracy of 99.75% on the test dataset of
+the movies. This simple method can thus be very accurate to determine the 
+sentiment. The results shown in the figures are likely close to the results when
+classifying by hand.
+
+### Word Clouds & Sentiment Analysis
+Car manufacturers now know if they receive positive or negative reviews on their 
+cars. Sentiment analysis alone however does not provide information on what can 
+be improved. Therefore, word clouds can be used again to see what people talk about 
+when giving either a positive or a negative review. The results for the three 
+car manufacturers can be seen in Figure 4. 
+
+```{r, out.width = "33%", fig.show = "hold", fig.cap="Word Clouds divided by Sentiment as result of Machine Learning, from left to right: BMW, Mazda, Cadillac", echo=FALSE}
+knitr::include_graphics(c("BMW_Wordcloud_sentiment.jpg", "Mazda_Wordcloud_sentiment.jpg", 
+                          "Cadillac_Wordcloud_sentiment.jpg"))
+```
+As can be seen from the word clouds some words describe positive feelings, such as 
+love, fun and great. This is not very informative to car manufacturers. The good
+thing is that also some car parts come up in both sides of the word cloud. As an 
+example, navigation, controls and seats for the Cadillac as well as the Cadillac 
+Escalade appear. Cadillac could use this information to look further into these 
+car parts to improve them. It could very well be related to the Escalade model. 
+
+## Conclusion & Future Work
+In this project, word clouds and sentiment analysis as two techniques of Natural 
+Language Processing have been used on car reviews. 
+This project was application-based, so two methods for sentiment analysis have 
+been used, namely dictionary-based sentiment analysis and learning-based sentiment
+analysis. 
+
+This project has shown how automated Natural Language Processing could quickly 
+give information to car manufacturers to either improve their cars or improve 
+services to customers that give a negative review. 
+
+Future work should work on a dataset with classified car-reviews to compare the 
+two methods of sentiment analysis. Another aspect to improve could be the classifier 
+that is used in the learning-based approach and check if the dictionary-based method
+also works well on car review data.
+
+
+## References
+[1] Ganesan, K. A., and C. X. Zhai, “Opinion-Based Entity Ranking“, Information Retrieval.
+
+[2] Maas, Andrew L. et al. (June 2011) "Learning Word Vectors for Sentiment Analysis", Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies
+
